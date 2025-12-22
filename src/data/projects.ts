@@ -64,7 +64,7 @@ export const projects: Project[] = [
     thumbnail: project4,
     description: "Edited an impactful interview series featuring activists and thought leaders. Created a cohesive visual style that honored each subject's unique story.",
     gallery: [project4, project2, project6],
-    isPinned: false,
+    isPinned: true,
   },
   {
     id: "music-video",
@@ -76,7 +76,7 @@ export const projects: Project[] = [
     description: "Produced a high-energy music video with elaborate lighting setups and fog effects. Coordinated with the artist's creative team to bring their vision to life.",
     youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     gallery: [project5, project1, project2],
-    isPinned: false,
+    isPinned: true,
   },
   {
     id: "corporate-brand",
@@ -87,6 +87,6 @@ export const projects: Project[] = [
     thumbnail: project6,
     description: "Edited a corporate brand film highlighting innovation and workplace culture. Delivered multiple versions optimized for various platforms and audiences.",
     gallery: [project6, project4, project3],
-    isPinned: false,
+    isPinned: true,
   },
 ];
