@@ -17,8 +17,7 @@ const Index = () => {
       <main className="flex-1 container py-8">
         {/* Featured Projects Grid */}
         <section id="projects" className="scroll-mt-20">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold">Featured Work</h2>
+          <div className="flex justify-end mb-6">
             <Link to="/projects">
               <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
                 View All Projects
