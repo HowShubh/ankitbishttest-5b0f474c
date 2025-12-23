@@ -1,7 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { Settings } from "lucide-react";
 
 const Header = () => {
+  const { isAdmin } = useAuth();
   const location = useLocation();
   
   return (
@@ -32,11 +35,21 @@ const Header = () => {
           </Link>
         </nav>
         
-        <a href="mailto:ankit.bisht@email.com">
-          <Button variant="outline" size="sm" className="border-foreground/20 hover:bg-foreground hover:text-background">
-            Contact Me
-          </Button>
-        </a>
+        <div className="flex items-center gap-4">
+          {isAdmin && (
+            <Link to="/admin">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <Settings className="h-4 w-4" />
+                Admin
+              </Button>
+            </Link>
+          )}
+          <a href="mailto:ankit.bisht@email.com">
+            <Button variant="outline" size="sm" className="border-foreground/20 hover:bg-foreground hover:text-background">
+              Contact Me
+            </Button>
+          </a>
+        </div>
       </div>
     </header>
   );
