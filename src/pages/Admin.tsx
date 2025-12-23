@@ -11,7 +11,7 @@ import ProjectForm from '@/components/admin/ProjectForm';
 import { Plus, Pencil, Trash2, LogOut, Pin } from 'lucide-react';
 
 export default function Admin() {
-  const { user, isAdmin, loading: authLoading, signOut } = useAuth();
+  const { user, isAdmin, loading: authLoading, adminChecked, signOut } = useAuth();
   const navigate = useNavigate();
   const { data: projects, isLoading } = useProjects();
   const createProject = useCreateProject();
@@ -29,13 +29,8 @@ export default function Admin() {
     }
   }, [user, authLoading, navigate]);
 
-  useEffect(() => {
-    if (!authLoading && user && !isAdmin) {
-      navigate('/');
-    }
-  }, [user, isAdmin, authLoading, navigate]);
-
-  if (authLoading || isLoading) {
+  // Wait for both auth and admin check to complete
+  if (authLoading || !adminChecked || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
@@ -43,7 +38,7 @@ export default function Admin() {
     );
   }
 
-  if (!isAdmin) {
+  if (user && !isAdmin) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md">

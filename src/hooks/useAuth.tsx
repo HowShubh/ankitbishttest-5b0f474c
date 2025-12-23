@@ -7,6 +7,7 @@ interface AuthContextType {
   session: Session | null;
   isAdmin: boolean;
   loading: boolean;
+  adminChecked: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -20,6 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [adminChecked, setAdminChecked] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -35,16 +37,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }, 0);
         } else {
           setIsAdmin(false);
+          setAdminChecked(true);
         }
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdminRole(session.user.id);
+        await checkAdminRole(session.user.id);
+      } else {
+        setAdminChecked(true);
       }
       setLoading(false);
     });
@@ -61,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
 
     setIsAdmin(!!data && !error);
+    setAdminChecked(true);
   };
 
   const signIn = async (email: string, password: string) => {
@@ -97,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, loading, adminChecked, signIn, signUp, signOut, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
