@@ -14,11 +14,11 @@ const authSchema = z.object({
 });
 
 export default function Auth() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, resetPassword, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +31,36 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
 
+    if (mode === 'forgot') {
+      const emailValidation = z.string().email().safeParse(email);
+      if (!emailValidation.success) {
+        toast({
+          title: 'Validation Error',
+          description: 'Please enter a valid email address',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await resetPassword(email);
+      if (error) {
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Email sent!',
+          description: 'Check your inbox for a password reset link.',
+        });
+        setMode('login');
+      }
+      setLoading(false);
+      return;
+    }
+
     const validation = authSchema.safeParse({ email, password });
     if (!validation.success) {
       toast({
@@ -42,7 +72,7 @@ export default function Auth() {
       return;
     }
 
-    const { error } = isLogin
+    const { error } = mode === 'login'
       ? await signIn(email, password)
       : await signUp(email, password);
 
@@ -52,12 +82,12 @@ export default function Auth() {
         description: error.message,
         variant: 'destructive',
       });
-    } else if (!isLogin) {
+    } else if (mode === 'signup') {
       toast({
         title: 'Account created!',
         description: 'You can now sign in.',
       });
-      setIsLogin(true);
+      setMode('login');
     }
 
     setLoading(false);
@@ -69,7 +99,9 @@ export default function Auth() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Admin Panel</CardTitle>
           <CardDescription>
-            {isLogin ? 'Sign in to manage projects' : 'Create an admin account'}
+            {mode === 'login' && 'Sign in to manage projects'}
+            {mode === 'signup' && 'Create an admin account'}
+            {mode === 'forgot' && 'Reset your password'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -85,28 +117,39 @@ export default function Auth() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            {mode !== 'forgot' && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
+              {loading ? 'Loading...' : mode === 'login' ? 'Sign In' : mode === 'signup' ? 'Sign Up' : 'Send Reset Link'}
             </Button>
           </form>
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center space-y-2">
+            {mode === 'login' && (
+              <button
+                type="button"
+                onClick={() => setMode('forgot')}
+                className="block w-full text-sm text-muted-foreground hover:text-primary"
+              >
+                Forgot password?
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
               className="text-sm text-muted-foreground hover:text-primary"
             >
-              {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
+              {mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>
           </div>
         </CardContent>
