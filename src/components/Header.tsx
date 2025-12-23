@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Settings } from "lucide-react";
+import { Settings, LogOut } from "lucide-react";
 
 const Header = () => {
-  const { isAdmin } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const location = useLocation();
   
   return (
@@ -44,11 +44,18 @@ const Header = () => {
               </Button>
             </Link>
           )}
-          <a href="mailto:ankit.bisht@email.com">
-            <Button variant="outline" size="sm" className="border-foreground/20 hover:bg-foreground hover:text-background">
-              Contact Me
+          {user ? (
+            <Button variant="outline" size="sm" onClick={signOut} className="gap-2 border-foreground/20 hover:bg-foreground hover:text-background">
+              <LogOut className="h-4 w-4" />
+              Logout
             </Button>
-          </a>
+          ) : (
+            <a href="mailto:ankit.bisht@email.com">
+              <Button variant="outline" size="sm" className="border-foreground/20 hover:bg-foreground hover:text-background">
+                Contact Me
+              </Button>
+            </a>
+          )}
         </div>
       </div>
     </header>
