@@ -7,7 +7,7 @@ interface TimelineItem {
 }
 
 const timeline: TimelineItem[] = [
-  { title: "Creative Producer", company: "H: create", period: "2023 - Present" },
+  { title: "Creative Producer", company: "KK.Create", period: "2024 - Present" },
   { title: "Video Editor", company: "Pixel Studios", period: "2020 - 2023" },
   { title: "Education", company: "Film & Television Institute", period: "2017 - 2020" },
 ];

@@ -8,13 +8,13 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-muted-foreground">Contact Details:</h3>
             <div className="space-y-2">
-              <a href="mailto:ankit.bisht@email.com" className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
+              <a href="mailto:ankitbisht@kkcreate.in" className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
                 <Mail className="w-4 h-4" />
-                ankit.bisht@email.com
+                ankitbisht@kkcreate.in
               </a>
               <p className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4" />
-                +91 96765 43210
+                +91 81262 32362 
               </p>
               <p className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4" />
@@ -25,7 +25,7 @@ const Footer = () => {
           
           <div className="flex items-center gap-4">
             <a 
-              href="https://instagram.com" 
+              href="https://instagram.com/behindthebisht" 
               target="_blank" 
               rel="noopener noreferrer"
               className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -33,7 +33,7 @@ const Footer = () => {
               <Instagram className="w-5 h-5" />
             </a>
             <a 
-              href="https://youtube.com" 
+              href="https://www.youtube.com/@behindthebisht" 
               target="_blank" 
               rel="noopener noreferrer"
               className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -41,7 +41,7 @@ const Footer = () => {
               <Youtube className="w-5 h-5" />
             </a>
             <a 
-              href="https://twitter.com" 
+              href="https://x.com/ankitxbisht" 
               target="_blank" 
               rel="noopener noreferrer"
               className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors"
