@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Settings, LogOut } from "lucide-react";
@@ -6,6 +6,19 @@ import { Settings, LogOut } from "lucide-react";
 const Header = () => {
   const { user, isAdmin, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleAboutClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === '/') {
+      document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  };
   
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -27,12 +40,13 @@ const Header = () => {
           >
             Projects
           </Link>
-          <Link 
-            to="/#about" 
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          <a 
+            href="/#about" 
+            onClick={handleAboutClick}
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary cursor-pointer"
           >
             About Me
-          </Link>
+          </a>
         </nav>
         
         <div className="flex items-center gap-4">
