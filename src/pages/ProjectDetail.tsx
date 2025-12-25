@@ -2,12 +2,24 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Play } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { projects } from "@/data/projects";
+import { useProject } from "@/hooks/useProjects";
 import { Button } from "@/components/ui/button";
 
 const ProjectDetail = () => {
   const { id } = useParams();
-  const project = projects.find(p => p.id === id);
+  const { data: project, isLoading } = useProject(id);
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container py-20 text-center">
+          <p className="text-muted-foreground">Loading project...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   
   if (!project) {
     return (
@@ -31,7 +43,7 @@ const ProjectDetail = () => {
       <main className="flex-1 container py-8">
         {/* Back Button */}
         <Link 
-          to="/" 
+          to="/projects" 
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -41,7 +53,7 @@ const ProjectDetail = () => {
         {/* Hero Image */}
         <div className="relative rounded-xl overflow-hidden mb-8">
           <img 
-            src={project.thumbnail} 
+            src={project.thumbnail_url || '/placeholder.svg'} 
             alt={project.title}
             className="w-full h-[300px] md:h-[400px] object-cover"
           />
@@ -53,7 +65,7 @@ const ProjectDetail = () => {
           <div className="space-y-4">
             <h1 className="text-3xl md:text-4xl font-semibold">{project.title}</h1>
             <p className="text-muted-foreground leading-relaxed">
-              {project.description}
+              {project.description || 'No description available.'}
             </p>
           </div>
           
@@ -64,43 +76,45 @@ const ProjectDetail = () => {
             </div>
             <div>
               <span className="text-xs text-muted-foreground">Client</span>
-              <p className="font-medium">{project.client}</p>
+              <p className="font-medium">{project.client || 'Personal'}</p>
             </div>
             <div>
               <span className="text-xs text-muted-foreground">Year</span>
-              <p className="font-medium">{project.year}</p>
+              <p className="font-medium">{project.year || 'N/A'}</p>
             </div>
           </div>
         </div>
         
         {/* Gallery */}
-        <section className="mb-10">
-          <h2 className="text-xl font-semibold mb-4">Gallery</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {project.gallery.map((image, index) => (
-              <div key={index} className="rounded-lg overflow-hidden">
-                <img 
-                  src={image} 
-                  alt={`${project.title} gallery ${index + 1}`}
-                  className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
+        {project.gallery && project.gallery.length > 0 && (
+          <section className="mb-10">
+            <h2 className="text-xl font-semibold mb-4">Gallery</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {project.gallery.map((image, index) => (
+                <div key={index} className="rounded-lg overflow-hidden">
+                  <img 
+                    src={image} 
+                    alt={`${project.title} gallery ${index + 1}`}
+                    className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
         
         {/* Video Section */}
-        {project.youtubeUrl && (
+        {project.youtube_url && (
           <section>
             <h2 className="text-xl font-semibold mb-4">Video</h2>
             <div className="relative aspect-video bg-card rounded-xl overflow-hidden flex items-center justify-center group cursor-pointer">
               <img 
-                src={project.thumbnail} 
+                src={project.thumbnail_url || '/placeholder.svg'} 
                 alt={project.title}
                 className="absolute inset-0 w-full h-full object-cover opacity-50"
               />
               <a 
-                href={project.youtubeUrl} 
+                href={project.youtube_url} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="relative z-10 w-20 h-20 rounded-full bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300"

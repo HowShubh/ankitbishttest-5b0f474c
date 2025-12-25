@@ -1,9 +1,11 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
-import { projects } from "@/data/projects";
+import { useProjects } from "@/hooks/useProjects";
 
 const Projects = () => {
+  const { data: projects, isLoading } = useProjects();
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -16,11 +18,21 @@ const Projects = () => {
           </p>
         </div>
         
-        <div className="portfolio-grid">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <p className="text-muted-foreground">Loading projects...</p>
+          </div>
+        ) : projects && projects.length > 0 ? (
+          <div className="portfolio-grid">
+            {projects.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center py-20">
+            <p className="text-muted-foreground">No projects found.</p>
+          </div>
+        )}
       </main>
       
       <Footer />

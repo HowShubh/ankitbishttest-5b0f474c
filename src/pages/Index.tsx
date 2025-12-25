@@ -4,11 +4,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
 import AboutSection from "@/components/AboutSection";
-import { projects } from "@/data/projects";
+import { usePinnedProjects } from "@/hooks/useProjects";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  const pinnedProjects = projects.filter((project) => project.isPinned);
+  const { data: pinnedProjects, isLoading } = usePinnedProjects();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -26,11 +26,21 @@ const Index = () => {
             </Link>
           </div>
           
-          <div className="portfolio-grid">
-            {pinnedProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <p className="text-muted-foreground">Loading projects...</p>
+            </div>
+          ) : pinnedProjects && pinnedProjects.length > 0 ? (
+            <div className="portfolio-grid">
+              {pinnedProjects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} index={index} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center py-20">
+              <p className="text-muted-foreground">No featured projects yet.</p>
+            </div>
+          )}
         </section>
         
         {/* About Section */}
