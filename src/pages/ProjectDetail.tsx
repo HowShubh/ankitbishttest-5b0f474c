@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useProject } from "@/hooks/useProjects";
 import { Button } from "@/components/ui/button";
-
+import OptimizedImage from "@/components/OptimizedImage";
 const ProjectDetail = () => {
   const { id } = useParams();
   const { data: project, isLoading } = useProject(id);
@@ -52,10 +52,11 @@ const ProjectDetail = () => {
         
         {/* Hero Image */}
         <div className="relative rounded-xl overflow-hidden mb-8">
-          <img 
+          <OptimizedImage 
             src={project.thumbnail_url || '/placeholder.svg'} 
             alt={project.title}
-            className="w-full h-[300px] md:h-[400px] object-cover"
+            className="w-full h-[300px] md:h-[400px]"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
         </div>
@@ -91,11 +92,11 @@ const ProjectDetail = () => {
             <h2 className="text-xl font-semibold mb-4">Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {project.gallery.map((image, index) => (
-                <div key={index} className="rounded-lg overflow-hidden">
-                  <img 
+                <div key={index} className="rounded-lg overflow-hidden hover:scale-105 transition-transform duration-500">
+                  <OptimizedImage 
                     src={image} 
                     alt={`${project.title} gallery ${index + 1}`}
-                    className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-500"
+                    aspectRatio="4/3"
                   />
                 </div>
               ))}
@@ -108,10 +109,10 @@ const ProjectDetail = () => {
           <section>
             <h2 className="text-xl font-semibold mb-4">Video</h2>
             <div className="relative aspect-video bg-card rounded-xl overflow-hidden flex items-center justify-center group cursor-pointer">
-              <img 
+              <OptimizedImage 
                 src={project.thumbnail_url || '/placeholder.svg'} 
                 alt={project.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-50"
+                className="absolute inset-0 w-full h-full opacity-50"
               />
               <a 
                 href={project.youtube_url} 
