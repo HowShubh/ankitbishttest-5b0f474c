@@ -1,4 +1,5 @@
 import profileImage from "@/assets/profile.jpg";
+import OptimizedImage from "@/components/OptimizedImage";
 
 interface TimelineItem {
   title: string;
@@ -45,10 +46,10 @@ const AboutSection = () => {
         </div>
         
         <div className="hidden md:block">
-          <img 
+          <OptimizedImage 
             src={profileImage} 
             alt="Ankit Bisht" 
-            className="w-48 h-60 object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-500"
+            className="w-48 h-60 rounded-lg grayscale hover:grayscale-0 transition-all duration-500"
           />
         </div>
       </div>
