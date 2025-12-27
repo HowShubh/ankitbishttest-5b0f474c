@@ -13,31 +13,29 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ['users-with-roles'],
     queryFn: async (): Promise<UserWithRole[]> => {
-      // Fetch all user roles with profile emails
-      const { data: roles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role, created_at');
-
-      if (rolesError) throw rolesError;
-
-      // Fetch profiles to get emails
-      const userIds = roles.map((r) => r.user_id);
+      // Fetch all profiles (all users)
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('user_id, email')
-        .in('user_id', userIds);
+        .select('user_id, email, created_at');
 
       if (profilesError) throw profilesError;
 
-      // Create email lookup map
-      const emailMap = new Map(profiles?.map((p) => [p.user_id, p.email]) || []);
+      // Fetch all user roles
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
 
-      // Map roles with emails
-      return roles.map((role) => ({
-        user_id: role.user_id,
-        email: emailMap.get(role.user_id) || '',
-        role: role.role as 'admin' | 'user',
-        created_at: role.created_at,
+      if (rolesError) throw rolesError;
+
+      // Create role lookup map
+      const roleMap = new Map(roles?.map((r) => [r.user_id, r.role]) || []);
+
+      // Map all profiles with their roles (null if no role assigned)
+      return (profiles || []).map((profile) => ({
+        user_id: profile.user_id,
+        email: profile.email,
+        role: (roleMap.get(profile.user_id) as 'admin' | 'user') || null,
+        created_at: profile.created_at,
       }));
     },
   });
