@@ -13,17 +13,29 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ['users-with-roles'],
     queryFn: async (): Promise<UserWithRole[]> => {
-      // Fetch all user roles (admins can see all)
+      // Fetch all user roles with profile emails
       const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id, role, created_at');
 
       if (rolesError) throw rolesError;
 
-      // Map roles to user format
+      // Fetch profiles to get emails
+      const userIds = roles.map((r) => r.user_id);
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('user_id, email')
+        .in('user_id', userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Create email lookup map
+      const emailMap = new Map(profiles?.map((p) => [p.user_id, p.email]) || []);
+
+      // Map roles with emails
       return roles.map((role) => ({
         user_id: role.user_id,
-        email: '', // We'll need to display user_id since we can't access auth.users
+        email: emailMap.get(role.user_id) || '',
         role: role.role as 'admin' | 'user',
         created_at: role.created_at,
       }));

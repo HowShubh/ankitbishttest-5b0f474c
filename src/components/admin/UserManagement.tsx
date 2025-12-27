@@ -128,7 +128,7 @@ const UserManagement = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>User ID</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Added</TableHead>
                 <TableHead className="text-right">Admin Access</TableHead>
@@ -141,11 +141,18 @@ const UserManagement = () => {
 
                 return (
                   <TableRow key={u.user_id}>
-                    <TableCell className="font-mono text-sm">
-                      {u.user_id.slice(0, 8)}...
-                      {isCurrentUser && (
-                        <span className="ml-2 text-xs text-muted-foreground">(you)</span>
-                      )}
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium">
+                          {u.email || 'No email'}
+                          {isCurrentUser && (
+                            <span className="ml-2 text-xs text-muted-foreground">(you)</span>
+                          )}
+                        </span>
+                        <span className="text-xs text-muted-foreground font-mono">
+                          {u.user_id.slice(0, 8)}...
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
