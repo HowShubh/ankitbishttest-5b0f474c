@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useProjects, useCreateProject, useUpdateProject, useDeleteProject, useTogglePinProject, type Project, type ProjectFormData } from '@/hooks/useProjects';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProjectForm from '@/components/admin/ProjectForm';
-import { Plus, Pencil, Trash2, LogOut, Pin } from 'lucide-react';
+import UserManagement from '@/components/admin/UserManagement';
+import { Plus, Pencil, Trash2, LogOut, Pin, FolderOpen, Users } from 'lucide-react';
 
 export default function Admin() {
   const { user, isAdmin, loading: authLoading, adminChecked, signOut } = useAuth();
@@ -90,64 +92,83 @@ export default function Admin() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold">Projects</h2>
-          <Button onClick={() => setShowForm(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Project
-          </Button>
-        </div>
+        <Tabs defaultValue="projects" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="projects" className="gap-2">
+              <FolderOpen className="h-4 w-4" />
+              Projects
+            </TabsTrigger>
+            <TabsTrigger value="users" className="gap-2">
+              <Users className="h-4 w-4" />
+              Users
+            </TabsTrigger>
+          </TabsList>
 
-        <div className="grid gap-4">
-          {projects?.map((project) => (
-            <Card key={project.id}>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  {project.thumbnail_url && (
-                    <img
-                      src={project.thumbnail_url}
-                      alt={project.title}
-                      className="w-24 h-18 object-cover rounded-md"
-                    />
-                  )}
-                  <div className="flex-1">
-                    <h3 className="font-semibold">{project.title}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {project.role} • {project.client} • {project.year}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Pin className={`w-4 h-4 ${project.is_pinned ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <Switch
-                        checked={project.is_pinned}
-                        onCheckedChange={() => handleTogglePin(project)}
-                      />
+          <TabsContent value="projects" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold">Projects</h2>
+              <Button onClick={() => setShowForm(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add New Project
+              </Button>
+            </div>
+
+            <div className="grid gap-4">
+              {projects?.map((project) => (
+                <Card key={project.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-4">
+                      {project.thumbnail_url && (
+                        <img
+                          src={project.thumbnail_url}
+                          alt={project.title}
+                          className="w-24 h-18 object-cover rounded-md"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{project.title}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {project.role} • {project.client} • {project.year}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <Pin className={`w-4 h-4 ${project.is_pinned ? 'text-primary' : 'text-muted-foreground'}`} />
+                          <Switch
+                            checked={project.is_pinned}
+                            onCheckedChange={() => handleTogglePin(project)}
+                          />
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => setEditingProject(project)}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => setDeleteId(project.id)}>
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => setEditingProject(project)}>
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => setDeleteId(project.id)}>
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </CardContent>
+                </Card>
+              ))}
 
-          {projects?.length === 0 && (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground mb-4">No projects yet. Create your first one!</p>
-                <Button onClick={() => setShowForm(true)}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Project
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+              {projects?.length === 0 && (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground mb-4">No projects yet. Create your first one!</p>
+                    <Button onClick={() => setShowForm(true)}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Project
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <UserManagement />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Create Dialog */}

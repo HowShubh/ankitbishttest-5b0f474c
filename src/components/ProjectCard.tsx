@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Play } from "lucide-react";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export interface Project {
   id: string;
@@ -27,10 +28,11 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="relative overflow-hidden">
-        <img 
+        <OptimizedImage 
           src={project.thumbnail_url || '/placeholder.svg'} 
           alt={project.title}
           className="project-card-image group-hover:scale-105 transition-transform duration-500"
+          aspectRatio="16/9"
         />
         
         {project.youtube_url && (
